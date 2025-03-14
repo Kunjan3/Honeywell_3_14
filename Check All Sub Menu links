@@ -1,0 +1,51 @@
+import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
+import com.kms.katalon.core.testobject.TestObject
+import com.kms.katalon.core.testobject.ConditionType
+import org.openqa.selenium.WebElement
+import org.openqa.selenium.By
+import com.kms.katalon.core.webui.driver.DriverFactory
+
+// Open browser and navigate to the website
+WebUI.openBrowser('')
+WebUI.navigateToUrl('https://www.airnavradar.com')
+WebUI.maximizeWindow()
+
+// Wait for the menu to be fully loaded
+WebUI.delay(3)
+
+// Get all submenu links dynamically
+List<WebElement> submenuLinks = DriverFactory.getWebDriver().findElements(By.xpath("//nav//a"))
+
+// Iterate through each submenu link
+for (WebElement link : submenuLinks) {
+    String linkText = link.getText().trim()
+    String linkHref = link.getAttribute("href")
+    
+    if (linkText.isEmpty() || linkHref == null || linkHref.isEmpty()) {
+        WebUI.comment("Skipping empty or invalid link: " + linkText)
+        continue
+    }
+    
+    // Click the submenu link
+    WebUI.comment("Clicking on: " + linkText)
+    WebUI.executeJavaScript("arguments[0].click();", Arrays.asList(link))
+    
+    // Wait for navigation
+    WebUI.delay(2)
+    
+    // Verify if the page is loaded by checking the URL
+    String currentUrl = WebUI.getUrl()
+    if (currentUrl.contains(linkHref)) {
+        WebUI.comment("✅ Passed: " + linkText + " navigated successfully.")
+    } else {
+        WebUI.comment("❌ Failed: " + linkText + " did not navigate correctly.")
+        WebUI.takeScreenshot() // Capture screenshot for debugging
+    }
+    
+    // Navigate back to the homepage to click the next link
+    WebUI.navigateToUrl('https://www.airnavradar.com')
+    WebUI.delay(2)
+}
+
+// Close the browser
+WebUI.closeBrowser()
