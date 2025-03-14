@@ -1,0 +1,39 @@
+import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
+import com.kms.katalon.core.checkpoint.CheckpointFactory as CheckpointFactory
+import com.kms.katalon.core.testcase.TestCaseFactory as TestCaseFactory
+import com.kms.katalon.core.testdata.TestDataFactory as TestDataFactory
+import com.kms.katalon.core.testobject.ObjectRepository as ObjectRepository
+import com.kms.katalon.core.testobject.TestObject
+
+// Open browser and navigate to the website
+WebUI.openBrowser('')
+WebUI.navigateToUrl('https://www.airnavradar.com')
+
+// Maximize browser window
+WebUI.maximizeWindow()
+
+// Hover over the "About" menu
+TestObject aboutMenu = new TestObject()
+aboutMenu.addProperty('xpath', com.kms.katalon.core.testobject.ConditionType.EQUALS, '//a[contains(text(),"About")]')
+
+WebUI.mouseOver(aboutMenu)
+
+// Click on the "Contact Us" link
+TestObject contactUsLink = new TestObject()
+contactUsLink.addProperty('xpath', com.kms.katalon.core.testobject.ConditionType.EQUALS, '//a[contains(text(),"Contact Us")]')
+
+WebUI.click(contactUsLink)
+
+// Verify the page navigated correctly (by checking the URL or a heading)
+String expectedUrl = 'https://www.airnavradar.com/contactus' // Checking if link is working or not
+String currentUrl = WebUI.getUrl()
+
+if (currentUrl.contains(expectedUrl)) {
+    WebUI.comment('Test Passed: Contact Us page loaded successfully.')
+} else {
+    WebUI.comment('Test Failed: Incorrect page loaded.')
+    WebUI.takeScreenshot() // Capture screenshot for debugging
+}
+
+// Close the browser
+WebUI.closeBrowser()
